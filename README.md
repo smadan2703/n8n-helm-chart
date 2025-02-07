@@ -8,6 +8,8 @@ This repository contains a Helm chart for deploying [n8n](https://n8n.io/) on Ku
 - [Installation](#installation)
 - [Configuration](#configuration)
 
+  
+![n8n-arch](https://github.com/user-attachments/assets/64c8a03a-f8e4-4304-961b-58ecf66ed8ea)
 
 
 ## Prerequisites
