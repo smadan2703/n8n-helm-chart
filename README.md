@@ -23,20 +23,14 @@ Before you begin, ensure you have the following installed:
 
 To install the n8n Helm chart, follow these steps:
 
-1. **Add the Helm repository** (if applicable):
-   ```bash
-   helm repo add n8n https://n8n.io/helm-charts
-   helm repo update
-   ```
-
-2. **Install the chart**:
+1. **Install the chart**:
    ```bash
    helm install my-n8n charts/n8n
    ```
 
    Replace `my-n8n` with your desired release name.
 
-3. **Verify the installation**:
+2. **Verify the installation**:
    ```bash
    kubectl get pods -n n8n
    ```
