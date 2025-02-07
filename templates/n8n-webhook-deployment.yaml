@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "n8n.fullname" . }}-webhook
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.webhook.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "n8n.fullname" . }}-webhook
+  template:
+    metadata:
+      labels:
+        app: {{ include "n8n.fullname" . }}-webhook
+    spec:
+      containers:
+        - name: n8n-webhook
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["n8n", "webhook"]
+          env:
+            - name: DB_TYPE
+              value: "{{ .Values.config.database.type }}"
+            - name: DB_POSTGRESDB_HOST
+              value: "{{ .Values.config.database.host }}"
+            - name: DB_POSTGRESDB_PORT
+              value: "{{ .Values.config.database.port }}"
+            - name: DB_POSTGRESDB_DATABASE
+              value: "{{ .Values.config.database.name }}"
+            - name: DB_POSTGRESDB_USER
+              value: "{{ .Values.config.database.user }}"
+            - name: DB_POSTGRESDB_PASSWORD
+              value: "{{ .Values.config.database.password }}"
+            - name: QUEUE_BULL_REDIS_HOST
+              value: "{{ .Values.config.redis.host }}"
+            - name: QUEUE_BULL_PREFIX
+              value: "{{ .Values.config.redis.prefix }}"
+            - name: QUEUE_HEALTH_CHECK_ACTIVE
+              value: "true"
+            - name: EXECUTIONS_MODE
+              value: "queue"
+            - name: N8N_ENCRYPTION_KEY
+              value: "{{ .Values.config.encryption.key }}"
+            - name: NODE_FUNCTION_ALLOW_EXTERNAL
+              value: "{{ .Values.config.nodeFunction.allowExternal }}"
+            - name: NODE_FUNCTION_ALLOW_BUILTIN
+              value: "{{ .Values.config.nodeFunction.allowBuiltin }}"
+          ports:
+            - containerPort: {{ .Values.webhook.containerPort }} 

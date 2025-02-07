@@ -1,0 +1,89 @@
+# Default values for n8n
+
+nameOverride: ""
+fullnameOverride: ""
+
+namespace: n8n
+
+image:
+  repository: docker.n8n.io/n8nio/n8n
+  pullPolicy: Always
+  tag: "latest"
+
+dindImage:
+  repository: docker
+  tag: "20.10-dind"
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/group.name: n8ningress
+    alb.ingress.kubernetes.io/certificate-arn: 
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/load-balancer-name: n8n-alb
+  host: zzz.madan.com  # Default host for production
+
+master:
+  replicaCount: 1
+  containerPort: 5678
+
+worker:
+  replicaCount: 2
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+webhook:
+  replicaCount: 2
+  containerPort: 5678
+
+config:
+  database:
+    type: postgresdb
+    host: 
+    port: "5432"
+    name: n8n
+    user: 
+    password: 
+
+  redis:
+    # Redis connection settings
+    host: 
+    prefix: "{n8n-queue}"
+    
+    # Redis deployment settings (for local Redis)
+    deployment:
+      enabled: false  # Set to true to deploy Redis locally
+      image:
+        repository: redis
+        tag: "6.2-alpine"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+
+  encryption:
+    key: <random generated key>
+
+  webhook:
+    url: https://zzz.madan.com/
+
+  nodeFunction:
+    allowExternal: "mongodb,bson,@langchain/cohere"
+    allowBuiltin: "*"

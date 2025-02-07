@@ -1,0 +1,29 @@
+{{- if .Values.config.redis.deployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}-redis
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-redis
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.config.redis.deployment.image.repository }}:{{ .Values.config.redis.deployment.image.tag }}"
+        ports:
+        - containerPort: 6379
+        resources:
+          {{- toYaml .Values.config.redis.deployment.resources | nindent 12 }}
+{{- end }} 
