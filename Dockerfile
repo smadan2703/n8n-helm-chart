@@ -1,4 +1,4 @@
-ROM docker.n8n.io/n8nio/n8n:latest
+FROM docker.n8n.io/n8nio/n8n:latest
 USER root
 RUN apk update && apk add --no-cache \
     docker-cli \
